@@ -8,7 +8,7 @@ const {
   userConfirmation,
   printSingle,
   printTitle
-} = require('./utils.js');
+} = require('./utils/utils.js');
 
 const expiration = Math.round(Date.now() / 1000 + 60 * 60 * config.expirationHours)
 const network = config.network == "rinkeby" ? Network.Rinkeby : Network.Main
