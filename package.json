@@ -1,0 +1,23 @@
+{
+  "name": "osbotnft",
+  "version": "1.0.0",
+  "description": "OpenSea bot for NFT",
+  "main": "mass_bid.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bot",
+    "os",
+    "bid",
+    "nft"
+  ],
+  "author": "fabdarice",
+  "license": "MIT",
+  "dependencies": {
+    "ethers": "^5.4.7",
+    "hdproxy-w3": "^1.5.0",
+    "opensea-js": "^1.2.0",
+    "prompt-sync": "^4.2.0"
+  }
+}
