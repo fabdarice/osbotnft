@@ -35,12 +35,17 @@ async function main() {
 
   while (true) {
     const secondsSinceEpoch = Math.round(Date.now() / 1000)
-    await delay(5000)
-    for (var i = 0, j = tokenIds.length; i < j; i += MAX_TOKEN_IDS_PER_REQUEST) {
-      tokenIdsRequest = tokenIds.slice(i, i + MAX_TOKEN_IDS_PER_REQUEST)
-      const assetsBelowPrice = await snipeBelowFloor(floorTarget, tokenIdsRequest, secondsSinceEpoch)
+    try {
+      for (var i = 0, j = tokenIds.length; i < j; i += MAX_TOKEN_IDS_PER_REQUEST) {
+        tokenIdsRequest = tokenIds.slice(i, i + MAX_TOKEN_IDS_PER_REQUEST)
+        await delay(800)
+        const assetsBelowPrice = await snipeBelowFloor(floorTarget, tokenIdsRequest, secondsSinceEpoch)
+        console.log(`Scanning from #${tokenIdsRequest[0]} to #${tokenIdsRequest[MAX_TOKEN_IDS_PER_REQUEST - 1]}`)
+      }
+    } catch(err) {
+      console.log(err)
+      continue
     }
-    console.log('No floor snipe detected.. waiting 5 seconds..')
   }
 }
 

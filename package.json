@@ -17,6 +17,7 @@
   "dependencies": {
     "ethers": "^5.4.7",
     "hdproxy-w3": "^1.5.0",
+    "https-proxy-agent": "^5.0.0",
     "opensea-js": "^1.2.0",
     "pify": "^5.0.0",
     "prompt-sync": "^4.2.0"

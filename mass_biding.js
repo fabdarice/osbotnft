@@ -53,10 +53,10 @@ async function massBids() {
   for (const tokenId of tokenIds) {
     assets.push({tokenId, tokenAddress: config.tokenAddress, schemaName: config.schemaName})
   }
-  // await delay(120000)
 
   for (const asset of assets) {
     try {
+      await delay(1000)
       await singleBid(seaport, asset)
     } catch(err) {
       // console.log(err)
