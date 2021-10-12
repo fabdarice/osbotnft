@@ -8,6 +8,11 @@ const {
   FgGreen,
 } = require('./colors.js');
 
+const {
+  config,
+  seaport,
+} = require('../config.js')
+
 function addZeroX(str) {
   if (str.startsWith("0x")) {
     return str
@@ -21,6 +26,16 @@ function addZeroX(str) {
 async function delay(ms) {
   // return await for better async stack trace support in case of errors.
   return await new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function getFloorPrice() {
+  const asset = await seaport.api.getAsset({
+    tokenId: config.tokenIdStart,
+    tokenAddress: config.tokenAddress, // string
+  })
+
+  const floor = asset['collection']['stats']['floor_price']
+  return floor
 }
 
 function userConfirmation() {
@@ -55,6 +70,7 @@ function printSuccess(msg) {
 module.exports = {
   addZeroX,
   delay,
+  getFloorPrice,
   numberWithCommas,
   userConfirmation,
   printSingle,

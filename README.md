@@ -7,6 +7,8 @@ npm install
 
 Fill in all information in `config.json`:
 ```shell
+cp config.json.template config.json
+
 {
     "network": "<NETWORK>",     // "mainnet" || "rinkeby"
     "rpcUri": "<NODE_URI>",     // Node RPC URI (ex: Infura, Alchemy, .)

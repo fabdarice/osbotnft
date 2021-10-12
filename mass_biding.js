@@ -1,30 +1,26 @@
-const { OpenSeaPort, Network } = require('opensea-js');
-const HDWalletProvider = require("hdproxy-w3");
 const { ethers } = require('ethers');
 
-const config = require('./config.json');
+const {
+  config,
+  expiration,
+  network,
+  tokenIds,
+  provider,
+  seaport,
+  wallet
+} = require('./config.js')
 
 const {
   userConfirmation,
+  delay,
+  getFloorPrice,
   printSingle,
-  printTitle
+  printTitle,
+  printError
 } = require('./utils/utils.js');
 
-const expiration = Math.round(Date.now() / 1000 + 60 * 60 * config.expirationHours)
-const network = config.network == "rinkeby" ? Network.Rinkeby : Network.Main
-const tokenIds = Array.from({length:config.tokenIdEnd-config.tokenIdStart+1},(v,k)=>config.tokenIdStart+k)
-var provider = new HDWalletProvider({
-      privateKeys: [config.privateKey],
-      providerOrUrl: config.rpcUri
-  });
-
-const seaport = new OpenSeaPort(provider, {
-  networkName: network
-})
-
-
 async function main() {
-  const floor = await getFloorPrice()
+  const floor = config.floor || await getFloorPrice()
   printConfig(floor)
   safetyCheck(floor)
   userConfirmation()
@@ -39,15 +35,17 @@ function safetyCheck(floor) {
   }
 }
 
-async function getFloorPrice() {
-  const asset = await seaport.api.getAsset({
-    tokenId: config.tokenIdStart,
-    tokenAddress: config.tokenAddress, // string
-  })
 
-  const floor = asset['collection']['stats']['floor_price']
-  return floor
-}
+// async function getAssets() {
+//   const assets = await seaport.api.getAssets({
+//     asset_contract_address: config.tokenAddress,
+//     order_direction: "asc",
+//     offset: 0,
+//     order_by: "pk",
+//     limit: 2,
+//   })
+//   return assets
+// }
 
 
 async function massBids() {
@@ -55,25 +53,33 @@ async function massBids() {
   for (const tokenId of tokenIds) {
     assets.push({tokenId, tokenAddress: config.tokenAddress, schemaName: config.schemaName})
   }
-  const wallet = new ethers.Wallet(config.privateKey)
+  // await delay(120000)
 
   for (const asset of assets) {
-    const bid = await seaport.createBuyOrder({
-      asset,
-      accountAddress: wallet.address,
-      // Value of the offer, in units of the payment token (or wrapped ETH if none is specified):
-      startAmount: config.bidAmount,
-      // Optional expiration time for the order, in Unix time (seconds):
-      expirationTime: expiration,
-    })
-    console.log(`Successfully bid ${config.bidAmount} ETH on #${asset['tokenId']}`)
+    try {
+      await singleBid(seaport, asset)
+    } catch(err) {
+      // console.log(err)
+      // console.log('waiting 80 secs..')
+      // await delay(120000)
+      await singleBid(seaport, asset)
+    }
   }
 }
 
+async function singleBid(seaport, asset) {
+  const bid = await seaport.createBuyOrder({
+    asset,
+    accountAddress: wallet.address,
+    // Value of the offer, in units of the payment token (or wrapped ETH if none is specified):
+    startAmount: config.bidAmount,
+    // Optional expiration time for the order, in Unix time (seconds):
+    expirationTime: expiration,
+  })
+  console.log(`Successfully bid ${config.bidAmount} ETH on #${asset['tokenId']}`)
+}
 
 function printConfig(floor) {
-  const wallet = new ethers.Wallet(config.privateKey)
-
   console.log('--------------- [Global Config] ---------------')
   printSingle('Network', network)
   printSingle('Node URI', config.rpcUri)

@@ -7,5 +7,6 @@
     "schemaName": "ERC721",
     "tokenIdStart": <TOKEN_ID_START>,
     "tokenIdEnd": <TOKEND_ID_END>,
-    "bidAmount": <BID_AMOUNT_IN_ETH>
+    "bidAmount": <BID_AMOUNT_IN_ETH>,
+    "floor": <OVERRIDE_FLOOR>
 }
