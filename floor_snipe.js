@@ -38,12 +38,13 @@ async function main() {
     try {
       for (var i = 0, j = tokenIds.length; i < j; i += MAX_TOKEN_IDS_PER_REQUEST) {
         tokenIdsRequest = tokenIds.slice(i, i + MAX_TOKEN_IDS_PER_REQUEST)
-        await delay(800)
+        await delay(1000)
         const assetsBelowPrice = await snipeBelowFloor(floorTarget, tokenIdsRequest, secondsSinceEpoch)
         console.log(`Scanning from #${tokenIdsRequest[0]} to #${tokenIdsRequest[MAX_TOKEN_IDS_PER_REQUEST - 1]}`)
       }
     } catch(err) {
       console.log(err)
+      await delay(12000)
       continue
     }
   }
@@ -72,7 +73,9 @@ async function snipeBelowFloor(floorTarget, tokenIds, secondsSinceEpoch) {
   for (const order of orders) {
     const curPrice = order['currentPrice']
     if (curPrice.lt(floorTarget)) {
-      console.log('--------------- [LOWBALL LISTING DETECTED] ---------------')
+      printSuccess('**********************************************************')
+      printSuccess('***************** LOWBALL LISTING DETECTED ***************')
+      printSuccess('**********************************************************')
       printSingle('Price (ETH)', ethers.utils.formatEther(curPrice.toString()))
       printSingle('TokenID', order['asset']['tokenId'])
       // await acceptOrder(order)

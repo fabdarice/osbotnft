@@ -49,6 +49,7 @@ function safetyCheck(floor) {
 
 
 async function massBids() {
+  console.log("Start mass bidings..")
   const assets = []
   for (const tokenId of tokenIds) {
     assets.push({tokenId, tokenAddress: config.tokenAddress, schemaName: config.schemaName})
@@ -56,7 +57,7 @@ async function massBids() {
 
   for (const asset of assets) {
     try {
-      await delay(1000)
+      await delay(320000)
       await singleBid(seaport, asset)
     } catch(err) {
       // console.log(err)
